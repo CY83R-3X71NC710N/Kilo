@@ -1,0 +1,21 @@
+{
+    "domains": {
+        "school": {
+            "lms_platforms": ["canvas", "blackboard", "moodle"],
+            "productivity_tools": ["google_docs", "microsoft_office", "notion"],
+            "learning_sites": ["coursera.org", "edx.org", "khan_academy"],
+            "blocked_categories": ["social_media", "gambling", "adult_content"],
+            "blocked_specific": ["youtube.com", "reddit.com", "facebook.com", "twitter.com"]
+        },
+        "work": {
+            "productivity_tools": ["slack", "microsoft_teams", "asana", "jira"],
+            "blocked_categories": ["social_media", "gambling", "adult_content"],
+            "blocked_specific": ["youtube.com", "reddit.com", "facebook.com", "twitter.com"]
+        },
+        "personal": {
+            "contextualization_required": true,
+            "base_blocked_categories": ["adult_content", "gambling"],
+            "flexibility_level": "high"
+        }
+    }
+}
