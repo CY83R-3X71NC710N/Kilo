@@ -21,5 +21,9 @@
             "ai_tools": ["chatgpt", "gemini", "bard", "copilot", "claude"],
             "productivity_tools": ["notion", "evernote", "todoist"]
         }
+    },
+    "block_settings": {
+        "initial_block_state": true,
+        "time_limit_minutes": 60
     }
 }
