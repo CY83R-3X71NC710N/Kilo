@@ -83,21 +83,20 @@ class ProductivityAnalyzer:
             "copilot": ["copilot.github.com"]
         }
         
-        # Check if it's an AI website
         for ai_tool, domains in ai_patterns.items():
-            if any(ai_domain in base_domain for ai_domain in domains):
-                # Check if this AI tool is allowed in settings
-                return "ai_tools" in settings and ai_tool in settings["ai_tools"]
+            if any(base_domain.endswith(ai_domain) for ai_domain in domains):
+                # Changed: use case-insensitive comparison for ai_tools check
+                return "ai_tools" in settings and ai_tool.lower() in [tool.lower() for tool in settings["ai_tools"]]
         
         # Check other platforms
         if "lms_platforms" in settings:
             for lms in settings["lms_platforms"]:
-                if lms.lower() in base_domain:
+                if base_domain.endswith(lms.lower()):
                     return True
         
         if "productivity_tools" in settings:
             for tool in settings["productivity_tools"]:
-                if tool.lower().replace("_", "") in base_domain:
+                if base_domain.endswith(tool.lower().replace("_", "")):
                     return True
                 
         return False
@@ -112,7 +111,7 @@ class ProductivityAnalyzer:
             "gemini.google.com",
             "copilot.github.com"
         ]
-        return any(ai_domain in base_domain for ai_domain in ai_patterns)
+        return any(base_domain.endswith(ai_domain) for ai_domain in ai_patterns)
 
     def analyze_website(self, url: str, domain: str) -> bool:
         """Analyze if a website is productive for the given domain and context."""
