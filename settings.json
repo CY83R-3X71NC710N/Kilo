@@ -1,21 +1,25 @@
 {
     "domains": {
         "school": {
-            "lms_platforms": ["canvas", "blackboard", "moodle", "google_classroom"],
-            "productivity_tools": ["google_docs", "microsoft_office", "notion"],
-            "learning_sites": ["coursera.org", "edx.org", "khan_academy","udemy","quizlet","anki"],
+            "lms_platforms": ["canvas", "blackboard", "moodle"],
+            "productivity_tools": ["wolframalpha", "desmos", "khan_academy"],
+            "ai_tools": ["chatgpt"],
+            "blocked_keywords": ["games", "social", "entertainment", "streaming"],
             "blocked_categories": ["social_media", "gambling", "adult_content"],
             "blocked_specific": ["youtube.com", "reddit.com", "facebook.com", "twitter.com"]
         },
         "work": {
-            "productivity_tools": ["slack", "microsoft_teams", "asana", "jira"],
+            "productivity_tools": ["slack", "zoom", "notion", "trello"],
+            "ai_tools": ["chatgpt", "gemini", "bard", "copilot", "claude"],
             "blocked_categories": ["social_media", "gambling", "adult_content"],
             "blocked_specific": ["youtube.com", "reddit.com", "facebook.com", "twitter.com"]
         },
         "personal": {
             "contextualization_required": true,
             "base_blocked_categories": ["adult_content", "gambling"],
-            "flexibility_level": "high"
+            "flexibility_level": "high",
+            "ai_tools": ["chatgpt", "gemini", "bard", "copilot", "claude"],
+            "productivity_tools": ["notion", "evernote", "todoist"]
         }
     }
 }
