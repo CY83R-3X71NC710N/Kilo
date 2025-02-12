@@ -179,9 +179,13 @@ async function fetchContextualization(domain) {
 }
 
 function logError(...args) {
-  const fs = require('fs');
   const logMessage = args.map(arg => (typeof arg === 'object' ? JSON.stringify(arg) : arg)).join(' ');
-  fs.appendFile('log.txt', logMessage + '\n', (err) => {
-    if (err) throw err;
+  const timestamp = new Date().toISOString();
+  const logEntry = `${timestamp} - ${logMessage}`;
+
+  chrome.storage.local.get({ errorLog: [] }, function (result) {
+    const errorLog = result.errorLog;
+    errorLog.push(logEntry);
+    chrome.storage.local.set({ errorLog: errorLog });
   });
 }
