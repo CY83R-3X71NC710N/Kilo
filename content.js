@@ -22,8 +22,10 @@ document.addEventListener('DOMContentLoaded', function () {
       currentQuestionIndex = 0;
       displayQuestion();
     } else if (request.type === 'displayErrorMessage') {
+      console.error("Error message received:", request.message);
       alert(request.message);
     } else if (request.type === 'questionnaireComplete') {
+      console.log("Questionnaire complete message received.");
       blockingEnabled = false;
       sendResponse({ status: 'unblocked' });
     }
