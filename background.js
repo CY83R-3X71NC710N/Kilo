@@ -23,6 +23,12 @@ chrome.webRequest.onBeforeRequest.addListener(
       return { cancel: true };
     }
 
+    const isProductive = await analyzeWebsite(details.url);
+    if (!isProductive) {
+      nonProductiveWebsites.push(domain);
+      return { cancel: true };
+    }
+
     return { cancel: false };
   },
   { urls: ["<all_urls>"] },
@@ -45,6 +51,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   } else if (message.type === "getQuestions") {
     fetchQuestions().then((questions) => {
       sendResponse({ questions });
+    });
+    return true; // Will respond asynchronously
+  } else if (message.type === "contextualize") {
+    fetchContextualization(message.domain).then((context) => {
+      contextData = context;
+      sendResponse({ context });
     });
     return true; // Will respond asynchronously
   }
@@ -74,4 +86,16 @@ async function analyzeWebsite(url) {
   });
   const data = await response.json();
   return data.isProductive;
+}
+
+async function fetchContextualization(domain) {
+  const response = await fetch('http://localhost:5000/contextualize', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ domain }),
+  });
+  const data = await response.json();
+  return data.context;
 }

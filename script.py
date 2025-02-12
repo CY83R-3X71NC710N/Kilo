@@ -5,6 +5,7 @@ from google import genai
 from typing import Dict, List
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
+from flask import Flask, request, jsonify
 
 def load_api_key() -> str:
     """Load API key from file or environment variable."""
@@ -176,23 +177,28 @@ class ProductivityAnalyzer:
             results[url] = self.analyze_website(url, domain)
         return results
 
-def main():
-    analyzer = ProductivityAnalyzer()
-    domain = input("Enter domain (work/school/personal): ").lower()
-    
-    if domain not in analyzer.settings["domains"]:
-        print("Invalid domain")
-        return
-    
+app = Flask(__name__)
+analyzer = ProductivityAnalyzer()
+
+@app.route('/analyzeWebsite', methods=['POST'])
+def analyze_website_endpoint():
+    data = request.json
+    url = data.get('url')
+    domain = data.get('domain')
+    is_productive = analyzer.analyze_website(url, domain)
+    return jsonify({'isProductive': is_productive})
+
+@app.route('/getQuestions', methods=['GET'])
+def get_questions_endpoint():
+    questions = analyzer.fetch_questions()
+    return jsonify({'questions': questions})
+
+@app.route('/contextualize', methods=['POST'])
+def contextualize_endpoint():
+    data = request.json
+    domain = data.get('domain')
     analyzer.contextualize(domain)
-    
-    while True:
-        url = input("Enter URL to analyze (or 'quit' to exit): ")
-        if url.lower() == 'quit':
-            break
-        
-        is_productive = analyzer.analyze_website(url, domain)
-        print(f"Website is {'productive' if is_productive else 'not productive'} for your task.")
+    return jsonify({'contextData': analyzer.context_data})
 
 if __name__ == "__main__":
-    main()
+    app.run(port=5000)

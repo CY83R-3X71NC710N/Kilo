@@ -38,5 +38,8 @@
     "256": "icon-256x256.png",
     "384": "icon-384x384.png",
     "512": "icon-512x512.png"
+  ],
+  "externally_connectable": {
+    "matches": ["http://localhost/*"]
   }
 }
