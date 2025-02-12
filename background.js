@@ -50,7 +50,12 @@ async function startQuestionnaire(domain) {
 chrome.webRequest.onBeforeRequest.addListener(
   async (details) => {
     const blockedUrl = chrome.runtime.getURL("blocked.html");
-    return { redirectUrl: blockedUrl };
+    const isProductive = await analyzeWebsite(details.url, currentDomain);
+    if (isProductive) {
+      return { cancel: false };
+    } else {
+      return { redirectUrl: blockedUrl };
+    }
   },
   { urls: ["<all_urls>"] },
   ["blocking"]

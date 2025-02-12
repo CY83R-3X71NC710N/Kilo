@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', function () {
       displayQuestion();
     } else if (request.type === 'displayErrorMessage') {
       alert(request.message);
+    } else if (request.type === 'questionnaireComplete') {
+      blockingEnabled = false;
+      sendResponse({ status: 'unblocked' });
     }
   });
 
