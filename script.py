@@ -17,6 +17,8 @@ def load_api_key() -> str:
                 api_key = f.read().strip()
         except FileNotFoundError:
             raise Exception("API key not found in environment or api_key.txt")
+    if not api_key:
+        raise Exception("API key is empty after loading from environment or api_key.txt")
     return api_key
 
 def load_domain_settings() -> Dict:

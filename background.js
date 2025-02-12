@@ -114,51 +114,66 @@ setInterval(() => {
 }, 1000);
 
 async function fetchQuestions(domain) {
-  const response = await fetch(`http://localhost:5000/getQuestions?domain=${domain}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
+  try {
+    const response = await fetch(`http://localhost:5000/getQuestions?domain=${domain}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
+    });
+    if (!response.ok) {
+      if (response.status === 403) {
+        throw new Error('HTTP error! status: 403');
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  });
-  if (!response.ok) {
-    if (response.status === 403) {
-      throw new Error('HTTP error! status: 403');
-    }
-    throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data.questions;
+  } catch (error) {
+    console.error("Error in fetchQuestions:", error);
+    throw error;
   }
-  const data = await response.json();
-  return data.questions;
 }
 
 async function analyzeWebsite(url, domain) {
-  const response = await fetch('http://localhost:5000/analyzeWebsite', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    },
-    body: JSON.stringify({ url: url, domain: domain, contextData: contextData }),
-  });
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  try {
+    const response = await fetch('http://localhost:5000/analyzeWebsite', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify({ url: url, domain: domain, contextData: contextData }),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data.isProductive;
+  } catch (error) {
+    console.error("Error in analyzeWebsite:", error);
+    throw error;
   }
-  const data = await response.json();
-  return data.isProductive;
 }
 
 async function fetchContextualization(domain) {
-  const response = await fetch('http://localhost:5000/contextualize', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    },
-    body: JSON.stringify({ domain }),
-  });
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  try {
+    const response = await fetch('http://localhost:5000/contextualize', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify({ domain }),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data.context;
+  } catch (error) {
+    console.error("Error in fetchContextualization:", error);
+    throw error;
   }
-  const data = await response.json();
-  return data.context;
 }
