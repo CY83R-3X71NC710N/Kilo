@@ -25,7 +25,8 @@
     "default_icon": {
       "48": "icon-48x48.png",
       "128": "icon-128x128.png"
-    }
+    },
+    "default_scripts": ["popup.js"]
   },
   "icons": {
     "48": "icon-48x48.png",
@@ -38,7 +39,7 @@
     "256": "icon-256x256.png",
     "384": "icon-384x384.png",
     "512": "icon-512x512.png"
-  ],
+  },
   "externally_connectable": {
     "matches": ["http://localhost/*"]
   }

@@ -16,6 +16,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.type === 'displayQuestions') {
+      questions = request.questions;
+      currentQuestionIndex = 0;
+      displayQuestion();
+    }
+  });
+
   function fetchQuestions() {
     // Fetch questions from the Python script
     fetch('http://localhost:5000/getQuestions')
@@ -40,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
       // Send answers and time limit to the background script for contextualization
       chrome.runtime.sendMessage(
         {
-          type: 'contextualize',
+          type: 'questionnaireComplete',
           contextData: contextData,
           timeLimit: timeLimit,
         },

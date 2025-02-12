@@ -158,9 +158,9 @@ class ProductivityAnalyzer:
             print(f"Error analyzing website: {e}")
             return False
 
-    def fetch_questions(self) -> List[str]:
+    def fetch_questions(self, domain: str) -> List[str]:
         """Fetch contextualization questions."""
-        initial_prompt = "You are an AI assistant helping understand a task. Ask a series of specific questions to understand the task better. Keep the questions short and direct. Do not include any numbering, formatting, or extra text."
+        initial_prompt = f"You are an AI assistant helping understand a {domain} task. Ask a series of specific questions to understand the task better. Keep the questions short and direct. Do not include any numbering, formatting, or extra text."
         
         response = self.client.models.generate_content(
             model="gemini-2.0-flash",
@@ -190,7 +190,8 @@ def analyze_website_endpoint():
 
 @app.route('/getQuestions', methods=['GET'])
 def get_questions_endpoint():
-    questions = analyzer.fetch_questions()
+    domain = request.args.get('domain', 'school')  # Default to 'school' if no domain is provided
+    questions = analyzer.fetch_questions(domain)
     return jsonify({'questions': questions})
 
 @app.route('/contextualize', methods=['POST'])
