@@ -7,7 +7,8 @@
     "webRequest",
     "webRequestBlocking",
     "<all_urls>",
-    "storage"
+    "storage",
+    "nativeMessaging"
   ],
   "background": {
     "scripts": ["background.js"],

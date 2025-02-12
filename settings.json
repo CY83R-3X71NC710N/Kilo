@@ -24,6 +24,9 @@
     },
     "block_settings": {
         "initial_block_state": true,
-        "time_limit_minutes": 60
+        "time_limit_minutes": 60,
+        "enforce_timeslot_blocking": true,
+        "timeslot_start": "09:00",
+        "timeslot_end": "17:00"
     }
 }

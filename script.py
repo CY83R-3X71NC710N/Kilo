@@ -157,6 +157,25 @@ class ProductivityAnalyzer:
             print(f"Error analyzing website: {e}")
             return False
 
+    def fetch_questions(self) -> List[str]:
+        """Fetch contextualization questions."""
+        initial_prompt = "You are an AI assistant helping understand a task. Ask a series of specific questions to understand the task better. Keep the questions short and direct. Do not include any numbering, formatting, or extra text."
+        
+        response = self.client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=initial_prompt
+        )
+        
+        questions = response.text.strip().split('\n')
+        return questions
+
+    def analyze_websites(self, urls: List[str], domain: str) -> Dict[str, bool]:
+        """Analyze multiple websites for productivity."""
+        results = {}
+        for url in urls:
+            results[url] = self.analyze_website(url, domain)
+        return results
+
 def main():
     analyzer = ProductivityAnalyzer()
     domain = input("Enter domain (work/school/personal): ").lower()
