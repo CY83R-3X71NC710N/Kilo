@@ -33,8 +33,19 @@ async function startQuestionnaire(domain) {
       });
     });
   } catch (error) {
-    console.error("Error fetching questions:", error);
-    // Handle error appropriately (e.g., display a message to the user)
+    if (error.message.includes('status: 403')) {
+      console.error("Error fetching questions: HTTP 403 Forbidden");
+      // Display a user-friendly message when a 403 error occurs
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          type: 'displayErrorMessage',
+          message: 'Access to the questions is forbidden. Please contact support.',
+        });
+      });
+    } else {
+      console.error("Error fetching questions:", error);
+      // Handle other errors appropriately (e.g., display a message to the user)
+    }
   }
 }
 
@@ -132,6 +143,9 @@ setInterval(() => {
 async function fetchQuestions(domain) {
   const response = await fetch(`http://localhost:5000/getQuestions?domain=${domain}`);
   if (!response.ok) {
+    if (response.status === 403) {
+      throw new Error('HTTP error! status: 403');
+    }
     throw new Error(`HTTP error! status: ${response.status}`);
   }
   const data = await response.json();
