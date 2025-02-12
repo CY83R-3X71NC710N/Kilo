@@ -6,6 +6,7 @@ from typing import Dict, List
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 def load_api_key() -> str:
     """Load API key from file or environment variable."""
@@ -178,6 +179,7 @@ class ProductivityAnalyzer:
         return results
 
 app = Flask(__name__)
+CORS(app)  # Add this line to enable CORS
 analyzer = ProductivityAnalyzer()
 
 @app.route('/analyzeWebsite', methods=['POST'])

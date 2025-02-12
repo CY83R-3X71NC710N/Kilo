@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
       questions = request.questions;
       currentQuestionIndex = 0;
       displayQuestion();
+    } else if (request.type === 'displayErrorMessage') {
+      alert(request.message);
     }
   });
 
