@@ -26,17 +26,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  function fetchQuestions() {
-    // Fetch questions from the Python script
-    fetch('http://localhost:5000/getQuestions')
-      .then(response => response.json())
-      .then(data => {
-        questions = data.questions;
-        displayQuestion();
-      })
-      .catch(error => console.error('Error fetching questions:', error));
-  }
-
   form.addEventListener('submit', function (event) {
     event.preventDefault();
     const answer = document.getElementById('answer').value;
@@ -62,6 +51,4 @@ document.addEventListener('DOMContentLoaded', function () {
       );
     }
   });
-
-  fetchQuestions();
 });
