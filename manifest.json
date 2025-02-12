@@ -23,13 +23,11 @@
   "browser_action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "icon-16x16.png",
       "48": "icon-48x48.png",
       "128": "icon-128x128.png"
     }
   },
   "icons": {
-    "16": "icon-16x16.png",
     "48": "icon-48x48.png",
     "72": "icon-72x72.png",
     "96": "icon-96x96.png",
