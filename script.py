@@ -29,6 +29,22 @@ class ProductivityAnalyzer:
         self.client = genai.Client(api_key=self.api_key)
         self.context_data = {}
         
+    def get_next_question(self, domain: str, context: Dict) -> str:
+        """Get the next contextual question based on previous answers."""
+        if not context:
+            # Initial prompt to get the first question
+            prompt = f"You are an AI assistant helping understand a {domain} task. Ask a single specific question to understand the task better. Keep the question short and direct. Do not include any numbering, formatting, or extra text."
+        else:
+            # Generate next question based on context
+            prompt = f"Based on previous answers, ask the next most relevant single question about the {domain} task, or respond with exactly 'DONE' if you have enough information. Previous answers: {json.dumps(context)}"
+        
+        response = self.client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt
+        )
+        
+        return response.text.strip()
+
     def contextualize(self, domain: str) -> None:
         """Ask focused questions one at a time to contextualize the task."""
         # Initial prompt to get the first question

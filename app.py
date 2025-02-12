@@ -7,6 +7,24 @@ CORS(app)
 
 analyzer = ProductivityAnalyzer()
 
+@app.route('/get_question', methods=['POST'])
+def get_question():
+    data = request.json
+    domain = data.get('domain')
+    context = data.get('context', {})
+    
+    if not domain or domain not in analyzer.settings['domains']:
+        return jsonify({'error': 'Invalid domain'}), 400
+    
+    question = analyzer.get_next_question(domain, context)
+    if question == "DONE":
+        return jsonify({'done': True})
+    
+    return jsonify({
+        'question': question,
+        'done': False
+    })
+
 @app.route('/contextualize', methods=['POST'])
 def contextualize():
     data = request.json
