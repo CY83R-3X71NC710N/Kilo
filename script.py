@@ -1,12 +1,16 @@
 import os
 import json
 import requests
+import logging
 from google import genai
 from typing import Dict, List
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+
+# Configure logging to write to log.txt
+logging.basicConfig(filename='log.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def load_api_key() -> str:
     """Load API key from file or environment variable."""
@@ -16,8 +20,10 @@ def load_api_key() -> str:
             with open("api_key.txt", "r") as f:
                 api_key = f.read().strip()
         except FileNotFoundError:
+            logging.error("API key not found in environment or api_key.txt")
             raise Exception("API key not found in environment or api_key.txt")
     if not api_key:
+        logging.error("API key is empty after loading from environment or api_key.txt")
         raise Exception("API key is empty after loading from environment or api_key.txt")
     return api_key
 
@@ -158,7 +164,7 @@ class ProductivityAnalyzer:
             return response.text.strip().upper() == 'YES'
             
         except Exception as e:
-            print(f"Error analyzing website: {e}")
+            logging.error(f"Error analyzing website: {e}")
             return False
 
     def fetch_questions(self, domain: str) -> List[str]:
