@@ -40,6 +40,15 @@ async function startQuestionnaire(domain) {
           message: 'Access to the questions is forbidden. Please contact support.',
         });
       });
+    } else if (error.message.includes('CORS')) {
+      console.error("Error fetching questions: CORS issue");
+      // Display a user-friendly message when a CORS error occurs
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          type: 'displayErrorMessage',
+          message: 'There was a CORS issue. Please check your server configuration.',
+        });
+      });
     } else {
       console.error("Error fetching questions:", error);
       // Handle other errors appropriately (e.g., display a message to the user)
@@ -105,7 +114,13 @@ setInterval(() => {
 }, 1000);
 
 async function fetchQuestions(domain) {
-  const response = await fetch(`http://localhost:5000/getQuestions?domain=${domain}`);
+  const response = await fetch(`http://localhost:5000/getQuestions?domain=${domain}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    }
+  });
   if (!response.ok) {
     if (response.status === 403) {
       throw new Error('HTTP error! status: 403');
@@ -121,6 +136,7 @@ async function analyzeWebsite(url, domain) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
     },
     body: JSON.stringify({ url: url, domain: domain, contextData: contextData }),
   });
@@ -136,6 +152,7 @@ async function fetchContextualization(domain) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
     },
     body: JSON.stringify({ domain }),
   });

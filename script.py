@@ -179,7 +179,7 @@ class ProductivityAnalyzer:
         return results
 
 app = Flask(__name__)
-CORS(app)  # Add this line to enable CORS
+CORS(app)  # Ensure CORS is enabled for all routes
 analyzer = ProductivityAnalyzer()
 
 @app.route('/analyzeWebsite', methods=['POST'])
@@ -204,4 +204,4 @@ def contextualize_endpoint():
     return jsonify({'contextData': analyzer.context_data})
 
 if __name__ == "__main__":
-    app.run(port=5000)
+    app.run(port=5000)  # Verify the Flask server is running on port 5000

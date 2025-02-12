@@ -41,6 +41,6 @@
     "512": "icon-512x512.png"
   },
   "externally_connectable": {
-    "matches": ["http://localhost/*"]
+    "matches": ["http://localhost/*", "http://127.0.0.1:5000/*"]
   }
 }
