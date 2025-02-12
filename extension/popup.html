@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { width: 300px; padding: 10px; }
+        .hidden { display: none; }
+        .result { margin-top: 10px; padding: 10px; }
+        .productive { background-color: #90EE90; }
+        .not-productive { background-color: #FFB6C1; }
+    </style>
+</head>
+<body>
+    <div id="domainSelect">
+        <h3>Select Domain</h3>
+        <select id="domain">
+            <option value="work">Work</option>
+            <option value="school">School</option>
+            <option value="personal">Personal</option>
+        </select>
+        <button id="startContext">Start</button>
+    </div>
+
+    <div id="contextQuestions" class="hidden">
+        <h3 id="question"></h3>
+        <input type="text" id="answer">
+        <button id="nextQuestion">Next</button>
+    </div>
+
+    <div id="analysisResult" class="hidden">
+        <h3>Analysis Result</h3>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

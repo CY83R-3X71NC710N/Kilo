@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Productivity Analyzer",
+  "version": "1.0",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "http://localhost:5000/*"
+  ]
+}
