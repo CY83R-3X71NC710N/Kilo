@@ -23,14 +23,22 @@
   "browser_action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
+      "16": "icon-16x16.png",
+      "48": "icon-48x48.png",
+      "128": "icon-128x128.png"
     }
   },
   "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "16": "icon-16x16.png",
+    "48": "icon-48x48.png",
+    "72": "icon-72x72.png",
+    "96": "icon-96x96.png",
+    "128": "icon-128x128.png",
+    "144": "icon-144x144.png",
+    "152": "icon-152x152.png",
+    "192": "icon-192x192.png",
+    "256": "icon-256x256.png",
+    "384": "icon-384x384.png",
+    "512": "icon-512x512.png"
   }
 }
