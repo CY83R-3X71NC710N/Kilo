@@ -49,47 +49,8 @@ async function startQuestionnaire(domain) {
 
 chrome.webRequest.onBeforeRequest.addListener(
   async (details) => {
-    if (blockingEnabled) {
-      const blockedUrl = chrome.runtime.getURL("blocked.html");
-      return { redirectUrl: blockedUrl };
-    }
-
-    if (!currentDomain) {
-      return { cancel: true }; // Block if domain not yet determined
-    }
-
-    if (!blockAll) {
-      if (blockUntil && Date.now() > blockUntil) {
-        blockAll = true;
-        // Re-initiate questions
-        chrome.runtime.sendMessage({ type: 'resetQuestions' });
-        return { cancel: true };
-      }
-    }
-
-    if (blockAll) {
-      return { cancel: true };
-    }
-
-    const url = new URL(details.url);
-    const domain = url.hostname;
-
-    if (nonProductiveWebsites.includes(domain)) {
-      return { cancel: true };
-    }
-
-    try {
-      const isProductive = await analyzeWebsite(details.url, currentDomain);
-      if (!isProductive) {
-        nonProductiveWebsites.push(domain);
-        return { cancel: true };
-      }
-    } catch (error) {
-      console.error("Error analyzing website:", error);
-      return { cancel: true }; // Block on error
-    }
-
-    return { cancel: false };
+    const blockedUrl = chrome.runtime.getURL("blocked.html");
+    return { redirectUrl: blockedUrl };
   },
   { urls: ["<all_urls>"] },
   ["blocking"]
