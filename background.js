@@ -32,7 +32,7 @@ async function startQuestionnaire(domain) {
     });
   } catch (error) {
     if (error.message.includes('status: 403')) {
-      console.error("Error fetching questions: HTTP 403 Forbidden");
+      logError("Error fetching questions: HTTP 403 Forbidden");
       // Display a user-friendly message when a 403 error occurs
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {
@@ -41,8 +41,8 @@ async function startQuestionnaire(domain) {
         });
       });
     } else if (error.message.includes('CORS')) {
-      console.error("Error fetching questions: CORS issue");
-      // Display a user-friendly message when a CORS error occurs
+      logError("Error fetching questions: CORS issue");
+      // Display a user-friendly message when a CORS issue occurs
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {
           type: 'displayErrorMessage',
@@ -50,7 +50,7 @@ async function startQuestionnaire(domain) {
         });
       });
     } else {
-      console.error("Error fetching questions:", error);
+      logError("Error fetching questions:", error);
       // Handle other errors appropriately (e.g., display a message to the user)
     }
   }
@@ -131,7 +131,7 @@ async function fetchQuestions(domain) {
     const data = await response.json();
     return data.questions;
   } catch (error) {
-    console.error("Error in fetchQuestions:", error);
+    logError("Error in fetchQuestions:", error);
     throw error;
   }
 }
@@ -152,7 +152,7 @@ async function analyzeWebsite(url, domain) {
     const data = await response.json();
     return data.isProductive;
   } catch (error) {
-    console.error("Error in analyzeWebsite:", error);
+    logError("Error in analyzeWebsite:", error);
     throw error;
   }
 }
@@ -173,7 +173,15 @@ async function fetchContextualization(domain) {
     const data = await response.json();
     return data.context;
   } catch (error) {
-    console.error("Error in fetchContextualization:", error);
+    logError("Error in fetchContextualization:", error);
     throw error;
   }
+}
+
+function logError(...args) {
+  const fs = require('fs');
+  const logMessage = args.map(arg => (typeof arg === 'object' ? JSON.stringify(arg) : arg)).join(' ');
+  fs.appendFile('log.txt', logMessage + '\n', (err) => {
+    if (err) throw err;
+  });
 }

@@ -16,16 +16,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  function logMessage(...args) {
+    const fs = require('fs');
+    const logMessage = args.map(arg => (typeof arg === 'object' ? JSON.stringify(arg) : arg)).join(' ');
+    fs.appendFile('log.txt', logMessage + '\n', (err) => {
+      if (err) throw err;
+    });
+  }
+
   chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.type === 'displayQuestions') {
       questions = request.questions;
       currentQuestionIndex = 0;
       displayQuestion();
     } else if (request.type === 'displayErrorMessage') {
-      console.error("Error message received:", request.message);
+      logMessage("Error message received:", request.message);
       alert(request.message);
     } else if (request.type === 'questionnaireComplete') {
-      console.log("Questionnaire complete message received.");
+      logMessage("Questionnaire complete message received.");
       blockingEnabled = false;
       sendResponse({ status: 'unblocked' });
     }
