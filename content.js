@@ -17,11 +17,14 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function fetchQuestions() {
-    // Fetch questions from the background script
-    chrome.runtime.sendMessage({ type: 'getQuestions' }, function (response) {
-      questions = response.questions;
-      displayQuestion();
-    });
+    // Fetch questions from the Python script
+    fetch('http://localhost:5000/getQuestions')
+      .then(response => response.json())
+      .then(data => {
+        questions = data.questions;
+        displayQuestion();
+      })
+      .catch(error => console.error('Error fetching questions:', error));
   }
 
   form.addEventListener('submit', function (event) {
@@ -34,10 +37,10 @@ document.addEventListener('DOMContentLoaded', function () {
       currentQuestionIndex++;
       displayQuestion();
     } else {
-      // Send answers and time limit to the background script
+      // Send answers and time limit to the background script for contextualization
       chrome.runtime.sendMessage(
         {
-          type: 'unblock',
+          type: 'contextualize',
           contextData: contextData,
           timeLimit: timeLimit,
         },
