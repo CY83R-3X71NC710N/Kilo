@@ -1,9 +1,9 @@
 {
     "domains": {
         "school": {
-            "lms_platforms": ["canvas", "blackboard", "moodle"],
+            "lms_platforms": ["canvas", "blackboard", "moodle", "google_classroom],
             "productivity_tools": ["google_docs", "microsoft_office", "notion"],
-            "learning_sites": ["coursera.org", "edx.org", "khan_academy"],
+            "learning_sites": ["coursera.org", "edx.org", "khan_academy","udemy"],
             "blocked_categories": ["social_media", "gambling", "adult_content"],
             "blocked_specific": ["youtube.com", "reddit.com", "facebook.com", "twitter.com"]
         },
