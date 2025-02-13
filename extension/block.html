@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
+
+        :root {
+            --matrix-green: #00ff00;
+            --matrix-dark: #002200;
+            --glow-color: rgba(0, 255, 0, 0.5);
+        }
+
+        body { 
+            min-height: 100vh;
+            background: #000;
+            color: var(--matrix-green);
+            font-family: 'Share Tech Mono', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        #matrix-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .block-container {
+            position: relative;
+            z-index: 1;
+            padding: 3rem;
+            background: rgba(0, 10, 0, 0.7);
+            border: 1px solid var(--matrix-green);
+            border-radius: 5px;
+            max-width: 600px;
+            transform-style: preserve-3d;
+            animation: float 6s ease-in-out infinite;
+            box-shadow: 0 0 30px var(--glow-color);
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotateX(0deg); }
+            50% { transform: translateY(-20px) rotateX(5deg); }
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            position: relative;
+            text-shadow: 0 0 10px var(--matrix-green);
+            animation: glitch 5s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: none; opacity: 1; }
+            7% { transform: skew(-0.5deg, -0.5deg); opacity: 0.75; }
+            10% { transform: none; opacity: 1; }
+            27% { transform: none; opacity: 1; }
+            30% { transform: skew(0.8deg, -0.1deg); opacity: 0.75; }
+            35% { transform: none; opacity: 1; }
+            52% { transform: none; opacity: 1; }
+            55% { transform: skew(-1deg, 0.2deg); opacity: 0.75; }
+            50% { transform: none; opacity: 1; }
+        }
+
+        .message {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            margin: 2rem 0;
+            text-shadow: 0 0 5px var(--glow-color);
+            position: relative;
+        }
+
+        .timer {
+            font-size: 3.5rem;
+            margin: 2rem 0;
+            text-shadow: 0 0 15px var(--glow-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #countdown {
+            font-weight: bold;
+            letter-spacing: 3px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { text-shadow: 0 0 15px var(--glow-color); }
+            50% { text-shadow: 0 0 30px var(--glow-color), 0 0 50px var(--glow-color); }
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                transparent 50%,
+                rgba(0, 255, 0, 0.02) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 2;
+            pointer-events: none;
+            animation: scan 10s linear infinite;
+        }
+
+        @keyframes scan {
+            from { background-position: 0 0; }
+            to { background-position: 0 -512px; }
+        }
+
+        #cursor-outer {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--matrix-green);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            left: -100px; /* Hide cursor initially */
+            top: -100px;
+        }
+
+        #cursor-inner {
+            width: 4px;
+            height: 4px;
+            background: var(--matrix-green);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            left: -100px; /* Hide cursor initially */
+            top: -100px;
+        }
+
+        .glow-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at center,
+                transparent 0%,
+                var(--glow-color) 100%
+            );
+            opacity: 0.1;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Updated cursor styles */
+        #cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--matrix-green);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform-origin: center;
+            transition: all 0.1s ease;
+            left: 0;
+            top: 0;
+        }
+
+        #cursor::after {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: var(--matrix-green);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Add this to existing styles */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        #custom-cursor {
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+
+        #custom-cursor::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--matrix-green);
+            border-radius: 50%;
+        }
+
+        #custom-cursor::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--matrix-green);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <!-- Remove previous cursor elements and add new one -->
+    <div id="custom-cursor"></div>
+    <canvas id="matrix-canvas"></canvas>
+    <div class="scanline"></div>
+    <div class="glow-effect"></div>
+    
+    <div class="block-container">
+        <h1 id="title">Access Denied</h1>
+        <p id="block-message" class="message">This site has been blocked as it is not productive for your current task.</p>
+        <div id="timer-container" class="timer">
+            <span>System Unlock:</span>
+            <span id="countdown">00:00:00</span>
+        </div>
+    </div>
+
+    <script>
+        // Handle cursor movement
+        (function setupCursor() {
+            const cursor = document.getElementById('custom-cursor');
+            
+            function moveCursor(e) {
+                const x = e.clientX;
+                const y = e.clientY;
+                if (cursor) {
+                    cursor.style.left = x + 'px';
+                    cursor.style.top = y + 'px';
+                }
+            }
+
+            document.addEventListener('mousemove', moveCursor);
+            document.addEventListener('mouseenter', moveCursor);
+        })();
+
+        // Setup Matrix effect
+        (function setupMatrix() {
+            const canvas = document.getElementById('matrix-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas size
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            // Matrix characters
+            const chars = '日ｦｱｳｴｵｶｷｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾓﾔﾕﾗﾘﾜ123456789';
+            const charArray = chars.split('');
+            const fontSize = 16;
+            const columns = canvas.width / fontSize;
+            const drops = new Array(Math.floor(columns)).fill(0);
+
+            // Drawing function
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = '#0F0';
+                ctx.font = fontSize + 'px monospace';
+
+                for (let i = 0; i < drops.length; i++) {
+                    const char = charArray[Math.floor(Math.random() * charArray.length)];
+                    const x = i * fontSize;
+                    const y = drops[i] * fontSize;
+
+                    ctx.fillStyle = `rgba(0, 255, 0, ${Math.random()})`;
+                    ctx.fillText(char, x, y);
+
+                    if (y > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+                requestAnimationFrame(draw);
+            }
+
+            // Start animation
+            draw();
+        })();
+    </script>
+    <script src="block.js"></script>
+</body>
+</html>

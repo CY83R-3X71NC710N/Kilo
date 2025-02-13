@@ -4,15 +4,31 @@
   "version": "1.0",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "declarativeNetRequest"
   ],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "redirect.html",
+    "default_width": 800,
+    "default_height": 250
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "host_permissions": [
-    "http://localhost:5000/*"
-  ]
+    "http://localhost:5000/*",
+    "http://127.0.0.1:5000/*",
+    "<all_urls>"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [{
+      "id": "ruleset_1",
+      "enabled": true,
+      "path": "rules.json"
+    }]
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
 }

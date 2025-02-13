@@ -2,34 +2,496 @@
 <html>
 <head>
     <style>
-        body { width: 300px; padding: 10px; }
-        .hidden { display: none; }
-        .result { margin-top: 10px; padding: 10px; }
-        .productive { background-color: #90EE90; }
-        .not-productive { background-color: #FFB6C1; }
+        @keyframes matrix-bg {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
+        }
+
+        @keyframes text-glow {
+            0% { text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000; }
+            50% { text-shadow: 0 0 15px #ff0000, 0 0 20px #ff0000; }
+            100% { text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000; }
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        * {
+            cursor: none !important;
+        }
+
+        html, body {
+            width: 770px;
+            height: 340px; /* Increased for better spacing */
+            padding: 15px 15px 20px 15px; /* Added bottom padding */
+            margin: 0;
+            box-sizing: border-box;
+            overflow: hidden; /* Prevent scrollbars */
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body, button, select, input, a {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            color: #0f0;
+            font-family: 'Share Tech Mono', monospace;
+            position: relative;
+            border: 1px solid #0f0;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            margin: 0;
+            padding: 0px;
+            min-height: 340px; /* Match body height */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .custom-cursor, .cursor-dot {
+            display: none;
+        }
+
+        h3 {
+            color: #0f0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #0f0;
+            position: relative;
+            overflow: hidden;
+            font-size: 16px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            margin-left: 150px; /* Center the title */
+        }
+
+        h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #0f0, transparent);
+            animation: scan-line 2s linear infinite;
+        }
+
+        @keyframes scan-line {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        select, input, button {
+            background-color: rgba(0, 20, 0, 0.8);
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 3px;
+            width: 100%;
+            margin: 3px 0;
+            font-family: 'Share Tech Mono', monospace;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        button {
+            background: linear-gradient(45deg, rgba(0,20,0,0.8), rgba(0,40,0,0.8));
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, rgba(0,40,0,0.8), rgba(0,60,0,0.8));
+            text-shadow: 0 0 10px #0f0;
+            transform: scale(1.02);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0,255,0,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        .hidden { 
+            display: none; 
+        }
+
+        .result {
+            margin-top: 5px;
+            padding: 10px;
+            border: 1px solid #600;
+            animation: text-glow 2s infinite;
+        }
+
+        .productive {
+            background-color: #001a00;
+            border-color: #0f0;
+            color: #0f0;
+        }
+
+        .not-productive {
+            background-color: #1a0000;
+            border-color: #f00;
+            color: #f00;
+        }
+
+        .loading {
+            color: #f00;
+            font-style: italic;
+            animation: text-glow 1s infinite;
+        }
+
+        .error {
+            color: #f00;
+            margin: 10px 0;
+            border-left: 3px solid #f00;
+            padding-left: 10px;
+        }
+
+        #contextQuestions {
+            border: 1px solid #600;
+            padding: 0px;
+            margin: 5px 0 15px 0; /* Adjusted margins */
+            background-color: rgba(30,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            min-height: 220px; /* Adjusted height */
+            max-height: 280px;
+            transition: all 0.3s ease;
+        }
+
+        /* Matrix rain effect container */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.1;
+            z-index: -1;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,255,0,0.15) 0%,
+                rgba(0,255,0,0) 50%,
+                rgba(0,255,0,0.15) 100%
+            );
+            background-size: 100% 50px;
+            animation: matrix-bg 1s linear infinite;
+        }
+
+        /* Scanline effect */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(255,0,0,0.1);
+            opacity: 0.75;
+            pointer-events: none;
+            animation: scanline 6s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        /* Add these new styles */
+        @keyframes matrixChar {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .matrix-output {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.2;
+            letter-spacing: 2px;
+            color: #0f0;
+            min-height: 35px;    /* Reduced from 40px */
+            max-height: 70px;    /* Reduced from 80px */
+            padding: 5px;
+            border: 1px solid #0f0;
+            background-color: rgba(0, 20, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+            margin-top: 5px;
+        }
+
+        .matrix-char {
+            display: inline-block;
+            animation: matrixChar 2s infinite;
+            margin: 0 2px;
+        }
+
+        .matrix-output::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(to right, #000, #0f0, #000);
+            animation: scanline 2s linear infinite;
+        }
+
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        #terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: #0f0;
+            margin-left: 5px;
+            animation: blink 1s step-end infinite;
+        }
+
+        .matrix-output {
+            position: relative;
+            padding: 15px;
+            background: rgba(0,20,0,0.3);
+            border: 1px solid #0f0;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .matrix-char {
+            display: inline-block;
+            opacity: 0;
+            animation: fade-in 0.5s forwards;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #domainSelect, #contextQuestions, #analysisResult {
+            max-height: 220px;
+        }
+
+        input {
+            cursor: text;
+            caret-color: #0f0;
+        }
+
+        input:focus {
+            cursor: none !important;
+            caret-color: #0f0;
+        }
+
+        button, select {
+            cursor: pointer; /* Force hide system cursor on interactive elements */
+        }
+
+        /* Hide system cursor */
+        body:hover, 
+        button:hover, 
+        select:hover, 
+        input:hover {
+            cursor: none !important;
+        }
+
+        /* Update responsive breakpoints to match redirect.html */
+        @media screen and (max-width: 900px) {
+            html, body {
+                width: 670px;  /* Reduced from 700px */
+                height: 340px;
+            }
+        }
+
+        @media screen and (max-width: 700px) {
+            html, body {
+                width: 470px;  /* Reduced from 500px */
+                height: 340px;
+            }
+        }
+
+        /* Add particle styles */
+        .particle {
+            pointer-events: none;
+            position: fixed;
+            background: #0f0;
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 9999;
+            mix-blend-mode: screen;
+        }
+
+        @keyframes particle-fade {
+            0% { opacity: 0.8; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.2); }
+        }
+
+        /* Update question container styles */
+        #question {
+            font-size: 14px;
+            line-height: 1.3;
+            max-height: 100px; /* Increased from 80px */
+            min-height: 20px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            margin-left: 20px; /* Adjusted for centering */
+            margin-right: 15px; /* Adjusted for centering */
+            padding: 8px;
+            background: rgba(0, 20, 0, 0.3);
+            border: 1px solid #0f0;
+            word-wrap: break-word;
+        }
+
+        /* Add scrollbar styling for the question container */
+        #question::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #question::-webkit-scrollbar-track {
+            background: rgba(0, 20, 0, 0.3);
+        }
+
+        #question::-webkit-scrollbar-thumb {
+            background: #0f0;
+            border-radius: 3px;
+        }
+
+        /* Update input and button sizes */
+        #answer {
+            height: 35px;
+            margin: 10px auto; /* Center the input */
+            padding: 8px;
+            width: 95%; /* Slightly less than 100% to center */
+        }
+
+        #nextQuestion {
+            height: 35px;
+            margin: 15px auto 5px auto; /* Center the button and add spacing */
+            width: 98%;
+        }
+
+        /* Update container heights and visibility */
+        #domainSelect {
+            height: auto;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: opacity 0.3s ease;
+        }
+
+        #contextQuestions.hidden,
+        #analysisResult.hidden {
+            display: none !important;
+            height: 0;
+            opacity: 0;
+        }
+
+        /* Make domain selector more prominent */
+        #domain {
+            height: 35px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        #startContext {
+            height: 35px;
+            margin-top: 10px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
+    <canvas id="matrix-rain" class="matrix-bg"></canvas>
+
     <div id="domainSelect">
-        <h3>Select Domain</h3>
+        <h3>Initialize System</h3>
         <select id="domain">
-            <option value="work">Work</option>
-            <option value="school">School</option>
-            <option value="personal">Personal</option>
+            <option value="">Select Domain...</option>
+            <option value="work">Work Protocol</option>
+            <option value="study">School Protocol</option>
+            <option value="personal">Personal Protocol</option>
         </select>
-        <button id="startContext">Start</button>
+        <button id="startContext" type="button">Execute</button>
     </div>
 
+    <!-- Add error display div -->
+    <div id="errorDisplay" class="error hidden"></div>
+
     <div id="contextQuestions" class="hidden">
-        <h3 id="question"></h3>
-        <input type="text" id="answer">
-        <button id="nextQuestion">Next</button>
+        <h3>System Query</h3>
+        <div id="question" style="margin-bottom: 10px;"></div>
+        <input type="text" id="answer" placeholder="Enter response...">
+        <button id="nextQuestion" type="button">Process</button>
     </div>
 
     <div id="analysisResult" class="hidden">
-        <h3>Analysis Result</h3>
-        <div id="result" class="result"></div>
+        <h3>Analysis Output</h3>
+        <div id="result" class="result">
+            <div class="matrix-output">
+                <div id="matrix-content">SYSTEM READY<span id="terminal-cursor"></span></div>
+            </div>
+        </div>
     </div>
+
+    <div id="loadingIndicator" class="hidden loading">Initializing...</div>
+    <div id="errorDisplay" class="error hidden"></div>
+
+    <script>
+        // Add particle system
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            document.body.appendChild(particle);
+
+            // Randomize particle properties
+            const size = Math.random() * 8 + 4;
+            const destinationX = x + (Math.random() - 0.5) * 50;
+            const destinationY = y + (Math.random() - 0.5) * 50;
+            const rotation = Math.random() * 520;
+            const delay = Math.random() * 200;
+
+            // Set particle styles
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            particle.style.transform = `translate(-50%, -50%)`;
+            particle.style.animation = `particle-fade 1s ease-out ${delay}ms`;
+
+            // Remove particle after animation
+            setTimeout(() => particle.remove(), 1000 + delay);
+        }
+
+        // Add mousemove listener for particle creation
+        let throttleTimer;
+        document.addEventListener('mousemove', (e) => {
+            if (!throttleTimer) {
+                throttleTimer = setTimeout(() => {
+                    createParticle(e.clientX, e.clientY);
+                    throttleTimer = null;
+                }, 50); // Adjust this value to control particle density
+            }
+        });
+
+        // Prevent default form submission
+        document.addEventListener('submit', (e) => {
+            e.preventDefault();
+        });
+    </script>
 
     <script src="popup.js"></script>
 </body>

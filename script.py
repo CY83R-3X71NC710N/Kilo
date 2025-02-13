@@ -30,20 +30,54 @@ class ProductivityAnalyzer:
         self.context_data = {}
         
     def get_next_question(self, domain: str, context: Dict) -> str:
-        """Get the next contextual question based on previous answers."""
-        if not context:
-            # Initial prompt to get the first question
-            prompt = f"You are an AI assistant helping understand a {domain} task. Ask a single specific question to understand the task better. Keep the question short and direct. Do not include any numbering, formatting, or extra text."
-        else:
-            # Generate next question based on context
-            prompt = f"Based on previous answers, ask the next most relevant single question about the {domain} task, or respond with exactly 'DONE' if you have enough information. Previous answers: {json.dumps(context)}"
-        
-        response = self.client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt
-        )
-        
-        return response.text.strip()
+        """Get the next contextual question based on previous answers using AI."""
+        try:
+            # For first question, provide domain context only
+            if not context:
+                prompt = f"""As a productivity assistant, ask one focused question to understand the user's {domain} task.
+                The question should help understand what specific activity they're working on.
+                Do not ask about time or duration.
+                Respond with only the question text, no additional formatting."""
+                
+                response = self.client.models.generate_content(
+                    model="gemini-2.0-flash",
+                    contents=prompt
+                )
+                return response.text.strip()
+            
+            # For subsequent questions, include previous context
+            context_json = json.dumps(context, indent=2)
+            prompt = f"""Based on this context about a {domain} task, ask one focused follow-up question.
+            Previous Q&A:
+            {context_json}
+            
+            Ask a question that builds upon this context to better understand:
+            - Specific task goals and objectives
+            - Required deliverables or outcomes
+            - Success criteria
+            - Task complexity or scope
+            
+            Important: Do not ask about time, duration, or scheduling.
+            
+            If you have enough context to understand the task's purpose and goals, respond with exactly 'DONE'.
+            Otherwise, respond with only your follow-up question, no additional text."""
+            
+            response = self.client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=prompt
+            )
+            
+            question = response.text.strip()
+            
+            # Check if AI thinks we have enough context
+            if question.upper() == 'DONE':
+                return 'DONE'
+                
+            return question
+            
+        except Exception as e:
+            print(f"Error generating question: {e}")
+            return "What are you trying to accomplish?"
 
     def contextualize(self, domain: str) -> None:
         """Ask focused questions one at a time to contextualize the task."""
@@ -129,16 +163,34 @@ class ProductivityAnalyzer:
         ]
         return any(base_domain.endswith(ai_domain) for ai_domain in ai_patterns)
 
+    def _is_productive_domain(self, url: str, domain: str) -> bool:
+        """Check if the domain is in the productive list."""
+        base_domain = self._get_domain_from_url(url)
+        settings = self.settings["domains"][domain]
+        
+        # Check if it's an explicitly allowed platform
+        if self._is_allowed_platform(url, domain):
+            return True
+            
+        # Check if it's in blocked specific list
+        if "blocked_specific" in settings:
+            for blocked in settings["blocked_specific"]:
+                if base_domain.endswith(blocked):
+                    return False
+                    
+        return None  # None means needs further analysis
+
     def analyze_website(self, url: str, domain: str) -> bool:
         """Analyze if a website is productive for the given domain and context."""
         try:
-            # If it's an AI site and not allowed by settings, short-circuit
-            if self._is_ai_site(url) and not self._is_allowed_platform(url, domain):
+            # Skip analysis for extension block page
+            if 'chrome-extension://' in url and 'block.html' in url:
                 return False
 
-            # First check if it's an allowed platform
-            if self._is_allowed_platform(url, domain):
-                return True
+            # Quick check for productive/blocked domains
+            is_productive = self._is_productive_domain(url, domain)
+            if is_productive is not None:
+                return is_productive
 
             # For other websites, perform content analysis
             response = requests.get(url)
