@@ -4,7 +4,7 @@ Kilo is an advanced AI productivity analyzer tool designed to help users stay fo
 
 ## Copyright
 
-© 2023 CY83R-3X71NC710N. All rights reserved.
+© 2025 CY83R-3X71NC710N. All rights reserved.
 
 ## Attribution
 
