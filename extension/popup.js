@@ -324,3 +324,92 @@ async function handleNextQuestion() {
     
     await getNextQuestion();
 }
+
+// Add JavaScript code to create and animate matrix code effect on `matrix-canvas`
+function createMatrixEffect() {
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas size
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Matrix characters
+    const chars = '日ｦｱｳｴｵｶｷｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾓﾔﾕﾗﾘﾜ123456789';
+    const charArray = chars.split('');
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = new Array(Math.floor(columns)).fill(0);
+
+    // Drawing function
+    function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#0F0';
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+            const char = charArray[Math.floor(Math.random() * charArray.length)];
+            const x = i * fontSize;
+            const y = drops[i] * fontSize;
+
+            ctx.fillStyle = `rgba(0, 255, 0, ${Math.random()})`;
+            ctx.fillText(char, x, y);
+
+            if (y > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+        requestAnimationFrame(draw);
+    }
+
+    // Start animation
+    draw();
+}
+
+// Add JavaScript code to handle custom cursor movement
+function handleCustomCursor() {
+    const cursor = document.getElementById('custom-cursor');
+    
+    function moveCursor(e) {
+        const x = e.clientX;
+        const y = e.clientY;
+        if (cursor) {
+            cursor.style.left = x + 'px';
+            cursor.style.top = y + 'px';
+        }
+    }
+
+    document.addEventListener('mousemove', moveCursor);
+    document.addEventListener('mouseenter', moveCursor);
+}
+
+// Add JavaScript code to handle scanline effect
+function handleScanlineEffect() {
+    const scanline = document.querySelector('.scanline');
+    if (scanline) {
+        scanline.style.animation = 'scanline 6s linear infinite';
+    }
+}
+
+// Add JavaScript code to handle glow effect
+function handleGlowEffect() {
+    const glowEffect = document.querySelector('.glow-effect');
+    if (glowEffect) {
+        glowEffect.style.animation = 'glow 2s ease-in-out infinite';
+    }
+}
+
+// Initialize effects
+document.addEventListener('DOMContentLoaded', () => {
+    createMatrixEffect();
+    handleCustomCursor();
+    handleScanlineEffect();
+    handleGlowEffect();
+});
