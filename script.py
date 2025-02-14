@@ -28,15 +28,10 @@ class ProductivityAnalyzer:
         self.settings = load_domain_settings()
         self.client = genai.Client(api_key=self.api_key)
         self.context_data = {}
-        self.question_count = 0 # Initialize question counter
-        self.max_questions = 5 # Set maximum questions to ask
 
     def get_next_question(self, domain: str, context: Dict) -> str:
         """Get the next contextual question based on previous answers using AI."""
         try:
-            if self.question_count >= self.max_questions: # Check question limit
-                return 'DONE'
-
             # For first question, provide domain context only
             if not context:
                 prompt = f"""As a productivity assistant, ask one focused question to understand the user's {domain} task.
@@ -48,7 +43,6 @@ class ProductivityAnalyzer:
                     model="gemini-2.0-flash",
                     contents=prompt
                 )
-                self.question_count += 1 # Increment question counter
                 return response.text.strip()
 
             # For subsequent questions, include previous context
@@ -65,9 +59,7 @@ class ProductivityAnalyzer:
 
             Important: Do not ask about time, duration, or scheduling.
 
-            If, after considering the conversation so far, you are confident you understand the user's core task, purpose and main goals related to {domain}, respond with exactly 'DONE'.
-            Only ask another question if it is strictly necessary to clarify a critical aspect of the task's purpose or deliverables.
-            Otherwise, respond with only your follow-up question, no additional text."""
+            **You should respond with 'DONE' when you are confident you understand the user's main task, purpose and goals related to {domain}. Only respond with 'DONE' when you can accurately assess if a website is productive for this task based on the gathered context.  If you still need more clarity on any of these aspects to make a productivity assessment, ask one more focused question.  If you believe you have enough information, respond with exactly 'DONE'. Otherwise, respond with only your follow-up question, no additional text.**"""
 
             response = self.client.models.generate_content(
                 model="gemini-2.0-flash",
@@ -80,7 +72,6 @@ class ProductivityAnalyzer:
             if question.upper() == 'DONE':
                 return 'DONE'
 
-            self.question_count += 1 # Increment question counter
             return question
 
         except Exception as e:
@@ -91,7 +82,6 @@ class ProductivityAnalyzer:
         """Ask focused questions one at a time to contextualize the task."""
         # Track conversation to maintain context
         conversation_history = []
-        self.question_count = 0 # Reset question counter for new domain
         self.context_data = {} # Clear previous context data
 
         while True:
