@@ -60,7 +60,7 @@
             letter-spacing: 2px;
             text-shadow: 0 0 10px #0f0;
             position: relative;
-            overflow: hidden;
+            /* overflow: hidden;  Removed overflow: hidden; from h3 */
             font-size: 16px;
             margin-top: 5px;
             margin-bottom: 10px;
@@ -75,7 +75,7 @@
             letter-spacing: 3px;
             text-shadow: 0 0 10px #ff0000;
             position: relative;
-            overflow: hidden;
+            /* overflow: hidden;  Removed overflow: hidden; from h3 */
             font-size: 18px;
             margin-top: 8px;
             margin-bottom: 12px;
@@ -90,7 +90,7 @@
             letter-spacing: 2px;
             text-shadow: 0 0 10px #0f0;
             position: relative;
-            overflow: hidden;
+            /* overflow: hidden;  Removed overflow: hidden; from h3 */
             font-size: 16px;
             margin-top: 5px;
             margin-bottom: 10px;
@@ -152,8 +152,8 @@
             animation: shine 3s infinite;
         }
 
-        .hidden { 
-            display: none; 
+        .hidden {
+            display: none;
         }
 
         .result {
@@ -338,9 +338,9 @@
         }
 
         /* Hide system cursor */
-        body:hover, 
-        button:hover, 
-        select:hover, 
+        body:hover,
+        button:hover,
+        select:hover,
         input:hover {
             cursor: none !important;
         }
@@ -484,7 +484,6 @@
         <button id="startContext" type="button">Execute</button>
     </div>
 
-    <!-- Add error display div -->
     <div id="errorDisplay" class="error hidden"></div>
 
     <div id="contextQuestions" class="hidden">
