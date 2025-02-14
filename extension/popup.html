@@ -20,11 +20,11 @@
         }
 
         html, body {
-            width: 770px;
-            height: 340px; /* Increased for better spacing */
+            width: 500px;
+            height: 300px; /* Adjusted height to ensure bottom border is visible */
             padding: 15px 15px 20px 15px; /* Added bottom padding */
             margin: 0;
-            box-sizing: border-box;
+            box-sizing: border-box; /* Added box-sizing to include padding and border in the element's total width and height */
             overflow: hidden; /* Prevent scrollbars */
             background-color: #000;
             display: flex;
@@ -44,7 +44,7 @@
             box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
             margin: 0;
             padding: 0px;
-            min-height: 340px; /* Match body height */
+            min-height: 320px; /* Adjusted height to ensure bottom border is visible */
             display: flex;
             flex-direction: column;
         }
@@ -64,7 +64,7 @@
             font-size: 16px;
             margin-top: 5px;
             margin-bottom: 10px;
-            margin-left: 120px; /* Center the title */
+            margin-left: 200px; /* Center the title */
             padding-bottom: 5px;
         }
 
@@ -79,7 +79,7 @@
             font-size: 18px;
             margin-top: 8px;
             margin-bottom: 12px;
-            margin-left: 150px; /* Center the title */
+            margin-left: 235px; /* Center the title */
             font-weight: bold;
         }
 
@@ -345,15 +345,15 @@
         /* Update responsive breakpoints to match redirect.html */
         @media screen and (max-width: 900px) {
             html, body {
-                width: 670px;  /* Reduced from 700px */
-                height: 340px;
+                width: 640px;  /* Reduced from 700px */
+                height: 410px; /* Adjusted height to ensure bottom border is visible */
             }
         }
 
         @media screen and (max-width: 700px) {
             html, body {
-                width: 470px;  /* Reduced from 500px */
-                height: 340px;
+                width: 640px;  /* Reduced from 500px */
+                height: 410px; /* Adjusted height to ensure bottom border is visible */
             }
         }
 
