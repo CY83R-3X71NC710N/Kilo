@@ -10,7 +10,7 @@
   "action": {
     "default_popup": "redirect.html",
     "default_width": 800,
-    "default_height": 250
+    "default_height": 800
   },
   "background": {
     "service_worker": "background.js",
