@@ -53,7 +53,38 @@
             display: none;
         }
 
-        h3 {
+        /* Domain section h3 */
+        #domainSelect h3 {
+            color: #0f0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #0f0;
+            position: relative;
+            overflow: hidden;
+            font-size: 16px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            margin-left: 120px; /* Center the title */
+            padding-bottom: 5px;
+        }
+
+        /* Questions section h3 */
+        #contextQuestions h3 {
+            color: #ff0000;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px #ff0000;
+            position: relative;
+            overflow: hidden;
+            font-size: 18px;
+            margin-top: 8px;
+            margin-bottom: 12px;
+            margin-left: 150px; /* Center the title */
+            font-weight: bold;
+        }
+
+        /* Analysis section h3 */
+        #analysisResult h3 {
             color: #0f0;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -66,7 +97,8 @@
             margin-left: 150px; /* Center the title */
         }
 
-        h3::after {
+        /* Remove or comment out the h3::after style */
+        /*h3::after {
             content: '';
             position: absolute;
             bottom: 0;
@@ -75,7 +107,7 @@
             height: 2px;
             background: linear-gradient(90deg, transparent, #0f0, transparent);
             animation: scan-line 2s linear infinite;
-        }
+        }*/
 
         @keyframes scan-line {
             0% { transform: translateX(-100%); }
@@ -412,6 +444,25 @@
             margin-top: 10px;
             font-size: 16px;
         }
+
+        /* Update scan-line styles */
+        .section-scan-line {
+            position: relative;
+            height: 2px;
+            width: 60%;
+            margin: 5px auto;
+            background: linear-gradient(90deg, transparent, currentColor, transparent);
+            animation: scan-line 2s linear infinite;
+        }
+
+        /* Color variants for scan-lines */
+        .scan-line-green {
+            color: #0f0;
+        }
+
+        .scan-line-red {
+            color: #ff0000;
+        }
     </style>
 </head>
 <body>
@@ -419,6 +470,7 @@
 
     <div id="domainSelect">
         <h3>Initialize System</h3>
+        <div class="section-scan-line scan-line-green"></div>
         <select id="domain">
             <option value="">Select Domain...</option>
             <option value="work">Work Protocol</option>
@@ -433,6 +485,7 @@
 
     <div id="contextQuestions" class="hidden">
         <h3>System Query</h3>
+        <div class="section-scan-line scan-line-red"></div>
         <div id="question" style="margin-bottom: 10px;"></div>
         <input type="text" id="answer" placeholder="Enter response...">
         <button id="nextQuestion" type="button">Process</button>
@@ -440,6 +493,7 @@
 
     <div id="analysisResult" class="hidden">
         <h3>Analysis Output</h3>
+        <div class="section-scan-line scan-line-green"></div>
         <div id="result" class="result">
             <div class="matrix-output">
                 <div id="matrix-content">SYSTEM READY<span id="terminal-cursor"></span></div>
