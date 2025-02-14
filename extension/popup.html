@@ -463,6 +463,65 @@
         .scan-line-red {
             color: #ff0000;
         }
+
+        /* Add styles for matrix code effect */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Add styles for custom cursor */
+        #custom-cursor {
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+
+        #custom-cursor::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--matrix-green);
+            border-radius: 50%;
+        }
+
+        #custom-cursor::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--matrix-green);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Add styles for glow effect */
+        .glow-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at center,
+                transparent 0%,
+                var(--glow-color) 100%
+            );
+            opacity: 0.1;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
     </style>
 </head>
 <body>
@@ -503,6 +562,18 @@
 
     <div id="loadingIndicator" class="hidden loading">Initializing...</div>
     <div id="errorDisplay" class="error hidden"></div>
+
+    <!-- Add canvas for matrix code effect -->
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- Add div for scanline effect -->
+    <div class="scanline"></div>
+
+    <!-- Add div for glow effect -->
+    <div class="glow-effect"></div>
+
+    <!-- Add div for custom cursor -->
+    <div id="custom-cursor"></div>
 
     <script>
         // Add particle system
