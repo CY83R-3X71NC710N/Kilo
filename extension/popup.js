@@ -324,3 +324,51 @@ async function handleNextQuestion() {
     
     await getNextQuestion();
 }
+
+// Add JavaScript code to generate the matrix rain effect, similar to extension/block.html
+(function setupMatrix() {
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas size
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Matrix characters
+    const chars = '日ｦｱｳｴｵｶｷｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾓﾔﾕﾗﾘﾜ123456789';
+    const charArray = chars.split('');
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = new Array(Math.floor(columns)).fill(0);
+
+    // Drawing function
+    function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#0F0';
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+            const char = charArray[Math.floor(Math.random() * charArray.length)];
+            const x = i * fontSize;
+            const y = drops[i] * fontSize;
+
+            ctx.fillStyle = `rgba(0, 255, 0, ${Math.random()})`;
+            ctx.fillText(char, x, y);
+
+            if (y > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+        requestAnimationFrame(draw);
+    }
+
+    // Start animation
+    draw();
+})();
