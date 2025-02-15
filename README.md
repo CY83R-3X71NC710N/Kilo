@@ -1,6 +1,6 @@
-# Kilo
+# Productivity Guard
 
-Kilo is an advanced AI productivity analyzer tool designed to help users stay focused on their tasks by blocking unproductive websites and providing contextual questions to understand the user's task better.
+Prouctivity Guard is an advanced AI productivity analyzer tool designed to help users stay focused on their tasks by blocking unproductive websites and providing contextual questions to understand the user's task better.
 
 ## Copyright
 
